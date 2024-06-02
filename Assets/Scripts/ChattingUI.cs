@@ -48,6 +48,11 @@ public class ChattingUI : NetworkBehaviour
         }
     }
 
+    public void RemoveNameOnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        _connectedNameDic.Remove(conn);
+    }
+
     [ClientRpc]
     void OnRecvMessage(string senderName, string msg)
     {
