@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 2515664621537366295}
   - component: {fileID: 2515664621537366292}
   - component: {fileID: 2515664621537366293}
+  - component: {fileID: 2328733968883456044}
   m_Layer: 5
   m_Name: ChattingUI
   m_TagString: Untagged
@@ -365,6 +366,25 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2328733968883456044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2515664621537366506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb9d57cb6c4fdf458c23b9612efd10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Text_ChatHistory: {fileID: 2515664622019334174}
+  Scrollbar_Chat: {fileID: 2515664621685337435}
+  Input_ChatMsg: {fileID: 2515664623085605603}
+  Btn_Send: {fileID: 2515664622453124345}
 --- !u!1 &2515664621685337433
 GameObject:
   m_ObjectHideFlags: 0
@@ -525,7 +545,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000015603464}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &2515664621850206429
