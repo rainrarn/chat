@@ -4,6 +4,8 @@ using UnityEngine;
 using Mirror;
 public class NetworkingAuthenticator : NetworkAuthenticator
 {
+    readonly HashSet<NetworkConnection> _connectionsPendingDisconnect = new HashSet<NetworkConnection>();
+    internal static readonly HashSet<string> _playerNames = new HashSet<string>();
     public struct AuthReqMsg : NetworkMessage
     {
         // 인증을 위해 사용
@@ -40,6 +42,20 @@ public class NetworkingAuthenticator : NetworkAuthenticator
 
     public void OnAuthRequestMessage(NetworkConnectionToClient conn, AuthReqMsg msg)
     {
+        //클라 인증 요청 메시지 도착 시 처리
+        Debug.Log($"인증 요청 : {msg.authUserName}");
+
+        if (_connectionsPendingDisconnect.Contains(conn)) return;
+
+        //웹서버, DB, PlayFab API등을 호출해 인증 확인
+        if (!_playerNames.Contains(msg.authUserName))
+        { 
+
+        }
+        else
+        {
+
+        }
     }
 
     IEnumerator DelayedDisconnect(NetworkConnectionToClient conn, float waitTime)
