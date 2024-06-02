@@ -827,6 +827,7 @@ GameObject:
   - component: {fileID: 8257694027859797977}
   - component: {fileID: 8257694027859797982}
   - component: {fileID: 8257694027859797983}
+  - component: {fileID: 5030446686212431089}
   m_Layer: 5
   m_Name: LoginPopup
   m_TagString: Untagged
@@ -921,6 +922,23 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5030446686212431089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8257694027859797980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5a5097f5693d66499b5fefb54f3d3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Input_NetworkAddress: {fileID: 8257694027820003461}
+  Input_UserName: {fileID: 8257694027785917653}
+  Btn_StartAsHostServer: {fileID: 8257694029201517335}
+  Btn_StartAsClient: {fileID: 8257694027697307388}
+  Text_Error: {fileID: 8257694029557000479}
 --- !u!1 &8257694027867424894
 GameObject:
   m_ObjectHideFlags: 0

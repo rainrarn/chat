@@ -78,6 +78,7 @@ public class LoginPopup : MonoBehaviour
         bool isUserNameValid = !string.IsNullOrWhiteSpace(userName);
         Btn_StartAsHostServer.interactable = isUserNameValid;
         Btn_StartAsClient.interactable = isUserNameValid;
+
     }
 
 
