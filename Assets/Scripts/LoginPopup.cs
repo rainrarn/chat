@@ -72,7 +72,12 @@ public class LoginPopup : MonoBehaviour
             Input_NetworkAddress.text = NetworkManager.singleton.networkAddress;
         }
     }
-
+    public void SetUIClientDisconnected()
+    {
+        this.gameObject.SetActive(true);
+        Input_UserName.text = string.Empty;
+        Input_UserName.ActivateInputField();
+    }
     public void OnValueChanged_ToggleButton(string userName)
     {
         bool isUserNameValid = !string.IsNullOrWhiteSpace(userName);
@@ -81,5 +86,6 @@ public class LoginPopup : MonoBehaviour
 
     }
 
-
+  
+   
 }
