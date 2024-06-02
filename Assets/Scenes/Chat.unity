@@ -466,7 +466,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2515664621794351934, guid: 69ab68c152f58754988063434d3946d6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00027371815
+      value: 0.00015899062
       objectReference: {fileID: 0}
     - target: {fileID: 2515664622141236226, guid: 69ab68c152f58754988063434d3946d6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -645,10 +645,6 @@ PrefabInstance:
     - target: {fileID: 8257694027859797980, guid: 28ef769269cff76419ef745aae49c9e8, type: 3}
       propertyPath: m_Name
       value: LoginPopup
-      objectReference: {fileID: 0}
-    - target: {fileID: 8257694027859797980, guid: 28ef769269cff76419ef745aae49c9e8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28ef769269cff76419ef745aae49c9e8, type: 3}

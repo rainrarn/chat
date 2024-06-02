@@ -83,6 +83,12 @@ public class LoginPopup : MonoBehaviour
         Text_Error.text = string.Empty;
         Text_Error.gameObject.SetActive(false);
     }
+    public void SetUIOnAuthError(string msg)
+    {
+        Text_Error.text = msg;
+        Text_Error.gameObject.SetActive(true);
+    }
+
     public void OnValueChanged_ToggleButton(string userName)
     {
         bool isUserNameValid = !string.IsNullOrWhiteSpace(userName);
