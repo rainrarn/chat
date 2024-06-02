@@ -2,10 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+
 public partial class NetworkingAuthenticator
 {
-    public void SetPlayerName(string username)
+    [SerializeField] LoginPopup _loginPopup;
+
+    [Header("Client Username")]
+    public string _playerName;
+
+    public void OnInputValueChanged_SetPlayerName(string username)
     {
+        _playerName = username;
+        _loginPopup.SetUIOnAuthValueChanged();
     }
 
     public override void OnStartClient()
@@ -26,6 +34,17 @@ public partial class NetworkingAuthenticator
 
     public void OnAuthResponseMessage(AuthResMsg msg)
     {
+        if (msg.code == 100) // ¼º°ø
+        {
+            Debug.Log($"Auth Response:{msg.code} {msg.message}");
+            ClientAccept();
+        }
+        else
+        {
+            Debug.LogError($"Auth Response: {msg.code} {msg.message}");
+            NetworkManager.singleton.StopHost();
 
+            _loginPopup.SetUIOnAuthError(msg.message);
+        }
     }
 }
