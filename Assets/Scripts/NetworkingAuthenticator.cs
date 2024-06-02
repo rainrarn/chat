@@ -19,7 +19,7 @@ public class NetworkingAuthenticator : NetworkAuthenticator
         public string message;
     }
 
-    #region Sereverside
+#region Sereverside
     [UnityEngine.RuntimeInitializeOnLoadMethod]
     static void ResetStatics()
     {
@@ -66,17 +66,29 @@ public class NetworkingAuthenticator : NetworkAuthenticator
         }
         else
         {
+            _connectionsPendingDisconnect.Add(conn);
 
+            AuthResMsg authResMsg = new AuthResMsg
+            {
+                code = 200,
+                message = "UserName already in use! Try again!"
+            };
+
+            conn.Send(authResMsg);
+            conn.isAuthenticated = false;
         }
+
+        StartCoroutine(DelayedDisconnect(conn, 1.0f));
+    
     }
 
     IEnumerator DelayedDisconnect(NetworkConnectionToClient conn, float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
+        ServerReject(conn);
 
         yield return null;
+        _connectionsPendingDisconnect.Remove(conn);
     }
-
-
-    #endregion
+ #endregion
 }
