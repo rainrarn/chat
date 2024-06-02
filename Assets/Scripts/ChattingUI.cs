@@ -12,7 +12,7 @@ public class ChattingUI : NetworkBehaviour
     [Header("UI")]
     [SerializeField] TextMeshProUGUI Text_ChatHistory;
     [SerializeField] Scrollbar Scrollbar_Chat;
-    [SerializeField] TMP_InputField Input_ChatMsg;
+    [SerializeField] InputField Input_ChatMsg;
     [SerializeField] Button Btn_Send;
 
     internal static string _localPlayerName;
@@ -71,8 +71,6 @@ public class ChattingUI : NetworkBehaviour
 
         Scrollbar_Chat.value = 0;
     }
-        
-
     //=============================================
 
     public void OnClick_SendMsg()
@@ -84,7 +82,25 @@ public class ChattingUI : NetworkBehaviour
         }
     }
 
+    public void OnClick_Exit()
+    {
+        NetworkManager.singleton.StopHost();
+    }
 
+    public void OnValueChanged_ToggleButton(string input)
+    {
+        Btn_Send.interactable = !string.IsNullOrWhiteSpace(input);
+    }
+
+    public void OnEndEdit_SendMsg(string input)
+    {
+        if(Input.GetKeyDown(KeyCode.Return)
+            ||Input.GetKeyDown(KeyCode.KeypadEnter)
+            ||Input.GetButtonDown("Summit"))
+        {
+            OnClick_SendMsg();
+        }
+    }
 
 
 }
