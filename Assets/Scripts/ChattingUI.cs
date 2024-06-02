@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Mirror;
+using Mirror.Examples.Chat;
 
 
 public class ChattingUI : NetworkBehaviour
@@ -27,7 +28,25 @@ public class ChattingUI : NetworkBehaviour
         Text_ChatHistory.text = string.Empty;
     }
 
+    [Command(requiresAuthority =false)]
+    void CommandSendMsg(string msg, NetworkConnectionToClient sender =null)
+    {
+        if(!_connectedNameDic.ContainsKey(sender))
+        {
+            var player = sender.identity.GetComponent<Player>();
+            var playerName = player.playerName;
+            _connectedNameDic.Add(sender, playerName);
+        }
+    }
 
+    public void OnClick_SendMsg()
+    {
+        var currentChatMsg = Input_ChatMsg.text;
+        if(!string.IsNullOrWhiteSpace(currentChatMsg))
+        {
+            CommandSendMsg(currentChatMsg.Trim());
+        }
+    }
 
 
 
