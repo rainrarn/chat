@@ -49,8 +49,20 @@ public class NetworkingAuthenticator : NetworkAuthenticator
 
         //웹서버, DB, PlayFab API등을 호출해 인증 확인
         if (!_playerNames.Contains(msg.authUserName))
-        { 
+        {
+            _playerNames.Add(msg.authUserName);
 
+            //대입한 인증 값은 Player.OnStartServer 시점에서 읽음
+            conn.authenticationData = msg.authUserName;
+
+            AuthResMsg authResMsg = new AuthResMsg
+            {
+                code = 100,
+                message = "Auth Sucess"
+            };
+
+            conn.Send(authResMsg);
+            ServerAccept(conn);
         }
         else
         {
