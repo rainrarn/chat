@@ -27,11 +27,13 @@ public class ChattingUI : NetworkBehaviour
 
     public override void OnStartServer()
     {
+        this.gameObject.SetActive(true);
         _connectedNameDic.Clear();
     }
 
     public override void OnStartClient()
     {
+        this.gameObject.SetActive(true);
         Text_ChatHistory.text = string.Empty;
     }
 
@@ -53,14 +55,23 @@ public class ChattingUI : NetworkBehaviour
 
         }
     }
-    public void OnClick_SendMsg()
+    [Command(requiresAuthority = false)]
+    void CommandSendMessage(string msg, NetworkConnectionToClient sender = null)
     {
-        var currentChatMsg = Input_ChatMsg.text;
-        if (!string.IsNullOrWhiteSpace(currentChatMsg))
+        if (!_connectedNameDic.ContainsKey(sender))
         {
-            CommandSendMsg(currentChatMsg.Trim());
+            var player = sender.identity.GetComponent<ChatUser>();
+            var playerName = player.PlayerName;
+            _connectedNameDic.Add(sender, playerName);
+        }
+
+        if (!string.IsNullOrWhiteSpace(msg))
+        {
+            var senderName = _connectedNameDic[sender];
+            OnResMessage(senderName, msg.Trim());
         }
     }
+
     public void RemoveNameOnServerDisconnect(NetworkConnectionToClient conn)
     {
         _connectedNameDic.Remove(conn);
@@ -74,6 +85,16 @@ public class ChattingUI : NetworkBehaviour
             $"<color=blue>{senderName}:</color>{msg}";
 
         AppendMessage(formateMsg);
+    }
+
+    [ClientRpc]
+    void OnResMessage(string chatterName, string msg)
+    {
+        if (chatterName == _localPlayerName)
+        {
+            AppendMessage(chatterName + msg);
+        }
+        else { }
     }
     //==================[UI]=======================
     void AppendMessage(string msg)
@@ -97,8 +118,10 @@ public class ChattingUI : NetworkBehaviour
         if(!string.IsNullOrWhiteSpace(currentChatMsg))
         {
             CommandSendMsg(currentChatMsg.Trim());
+            CommandSendMessage(currentChatMsg.Trim());
         }
     }
+ 
 
     public void OnClick_Exit()
     {
@@ -107,7 +130,7 @@ public class ChattingUI : NetworkBehaviour
 
     public void OnValueChanged_ToggleButton(string input)
     {
-        Btn_Send.interactable = !string.IsNullOrWhiteSpace(input);
+        Btn_Send.interactable = !string.IsNullOrWhiteSpace(Input_ChatMsg.text);
     }
 
     public void OnEndEdit_SendMsg(string input)

@@ -20,6 +20,8 @@ public class LoginPopup : MonoBehaviour
     [SerializeField]
     internal TextMeshProUGUI Text_Error;
 
+    [SerializeField] NetworkManager _netManager;
+    
     public static LoginPopup instance { get; private set; }
 
     private string _originNetworkAddress;
@@ -27,6 +29,7 @@ public class LoginPopup : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        Text_Error.gameObject.SetActive(false);
     }
 
     private void Start()
@@ -97,6 +100,21 @@ public class LoginPopup : MonoBehaviour
 
     }
 
-  
+    public void OnClick_StartHost()
+    {
+        if (_netManager == null)
+            return;
+
+        _netManager.StartHost();
+        this.gameObject.SetActive(false);
+    }
+
+    public void OnClick_StartAsClient()
+    {
+        if( _netManager == null) 
+            return;
+        _netManager.StopClient();
+        this.gameObject.SetActive(false);
+    }
    
 }
