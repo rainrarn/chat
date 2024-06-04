@@ -2,6 +2,8 @@ using UnityEngine;
 using Mirror;
 public class NetworkingManager : NetworkManager
 {
+    [SerializeField] LoginPopup _loginPopup;
+    [SerializeField] ChattingUI _chattingUI;
     public void OnInputValueChanged_SetHostName(string hostName)
     {
         this.networkAddress = hostName;
@@ -9,11 +11,19 @@ public class NetworkingManager : NetworkManager
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
-        base.OnServerDisconnect(conn);
+        if(_chattingUI != null)
+        {
+            _chattingUI.RemoveNameOnServerDisconnect(conn);
+        }
     }
 
     public override void OnClientDisconnect()
     {
         base.OnClientDisconnect();
+
+        if(_loginPopup != null)
+        {
+            _loginPopup.SetUIClientDisconnected();
+        }
     }
 }

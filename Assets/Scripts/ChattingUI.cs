@@ -35,6 +35,7 @@ public class ChattingUI : NetworkBehaviour
         Text_ChatHistory.text = string.Empty;
     }
 
+   
     [Command(requiresAuthority = false)]
     void CommandSendMsg(string msg, NetworkConnectionToClient sender = null)
     {
@@ -52,7 +53,14 @@ public class ChattingUI : NetworkBehaviour
 
         }
     }
-
+    public void OnClick_SendMsg()
+    {
+        var currentChatMsg = Input_ChatMsg.text;
+        if (!string.IsNullOrWhiteSpace(currentChatMsg))
+        {
+            CommandSendMsg(currentChatMsg.Trim());
+        }
+    }
     public void RemoveNameOnServerDisconnect(NetworkConnectionToClient conn)
     {
         _connectedNameDic.Remove(conn);
