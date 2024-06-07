@@ -22,7 +22,7 @@ public class ChattingUI : NetworkBehaviour
     internal static readonly Dictionary<NetworkConnectionToClient, string> _connectedNameDic = new Dictionary<NetworkConnectionToClient, string>();
     public void SetLocalPlayerName(string userName)
     {
-        _localPlayerName = userName;
+        _localPlayerName = userName;    
     }
 
     public override void OnStartServer()
@@ -43,8 +43,8 @@ public class ChattingUI : NetworkBehaviour
     {
         if (!_connectedNameDic.ContainsKey(sender))
         {
-            var player = sender.identity.GetComponent<Player>();
-            var playerName = player.playerName;
+            var player = sender.identity.GetComponent<ChatUser>();
+            var playerName = player.PlayerName;
             _connectedNameDic.Add(sender, playerName);
         }
 
@@ -55,22 +55,7 @@ public class ChattingUI : NetworkBehaviour
 
         }
     }
-    [Command(requiresAuthority = false)]
-    void CommandSendMessage(string msg, NetworkConnectionToClient sender = null)
-    {
-        if (!_connectedNameDic.ContainsKey(sender))
-        {
-            var player = sender.identity.GetComponent<ChatUser>();
-            var playerName = player.PlayerName;
-            _connectedNameDic.Add(sender, playerName);
-        }
-
-        if (!string.IsNullOrWhiteSpace(msg))
-        {
-            var senderName = _connectedNameDic[sender];
-            OnResMessage(senderName, msg.Trim());
-        }
-    }
+   
 
     public void RemoveNameOnServerDisconnect(NetworkConnectionToClient conn)
     {
@@ -81,21 +66,13 @@ public class ChattingUI : NetworkBehaviour
     void OnRecvMessage(string senderName, string msg)
     {
         string formateMsg = (senderName == _localPlayerName) ?
-            $"<color=red>{senderName}:</color>{msg}" :
-            $"<color=blue>{senderName}:</color>{msg}";
+            $"<color=red> {senderName} : </color> {msg}" :
+            $"<color=blue> {senderName} : </color> {msg}";
 
         AppendMessage(formateMsg);
     }
 
-    [ClientRpc]
-    void OnResMessage(string chatterName, string msg)
-    {
-        if (chatterName == _localPlayerName)
-        {
-            AppendMessage(chatterName + msg);
-        }
-        else { }
-    }
+    
     //==================[UI]=======================
     void AppendMessage(string msg)
     {
@@ -118,7 +95,7 @@ public class ChattingUI : NetworkBehaviour
         if(!string.IsNullOrWhiteSpace(currentChatMsg))
         {
             CommandSendMsg(currentChatMsg.Trim());
-            CommandSendMessage(currentChatMsg.Trim());
+            
         }
     }
  

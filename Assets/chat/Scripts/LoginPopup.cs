@@ -10,7 +10,7 @@ public class LoginPopup : MonoBehaviour
     [SerializeField]
     internal TMP_InputField Input_NetworkAddress;
     [SerializeField]
-    internal TMP_InputField Input_UserName;
+    internal InputField Input_UserName;
 
     [SerializeField]
     internal Button Btn_StartAsHostServer;
@@ -113,7 +113,7 @@ public class LoginPopup : MonoBehaviour
     {
         if( _netManager == null) 
             return;
-        _netManager.StopClient();
+        _netManager.StartClient();
         this.gameObject.SetActive(false);
     }
    

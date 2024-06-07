@@ -76,10 +76,12 @@ public partial class NetworkingAuthenticator : NetworkAuthenticator
 
             conn.Send(authResMsg);
             conn.isAuthenticated = false;
+
+            StartCoroutine(DelayedDisconnect(conn, 1.0f));
+
         }
 
-        StartCoroutine(DelayedDisconnect(conn, 1.0f));
-    
+
     }
 
     IEnumerator DelayedDisconnect(NetworkConnectionToClient conn, float waitTime)

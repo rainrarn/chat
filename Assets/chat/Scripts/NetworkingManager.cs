@@ -15,6 +15,8 @@ public class NetworkingManager : NetworkManager
         {
             _chattingUI.RemoveNameOnServerDisconnect(conn);
         }
+
+        base.OnServerDisconnect(conn);
     }
 
     public override void OnClientDisconnect()
