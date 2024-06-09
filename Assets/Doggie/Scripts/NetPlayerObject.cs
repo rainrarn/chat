@@ -9,8 +9,10 @@ public class NetPlayerObject : NetworkBehaviour
     public NavMeshAgent NavAgent_Player;
     public Animator Animator_Player;
     public Transform Transform_Player;
-
     
+    // 플레이어의 준비 상태
+    [SyncVar]
+    public bool isReady = false;
 
     private void Update()
     {
@@ -24,6 +26,8 @@ public class NetPlayerObject : NetworkBehaviour
     {
         return Application.isFocused;
     }
+
+    //이동
     private void CheckIsLocalPlayerOnUpdate()
     {
         if (isLocalPlayer == false)
@@ -40,33 +44,13 @@ public class NetPlayerObject : NetworkBehaviour
         Animator_Player.SetBool("isrun", moveVec != Vector3.zero);
 
         transform.LookAt(transform.position + moveVec);
-
-
-        //if (isLocalPlayer == false)
-        //    return;
-
-        //// 회전
-        //float horizontal = Input.GetAxis("Horizontal");
-        //transform.Rotate(0, horizontal * _rotationSpeed * Time.deltaTime, 0);
-
-        //// 이동
-        //float vertical = Input.GetAxis("Vertical");
-        //Vector3 forward = transform.TransformDirection(Vector3.forward);
-        //NavAgent_Player.velocity = forward * Mathf.Max(vertical, 0) * NavAgent_Player.speed;
-        //Animator_Player.SetBool("Moving", NavAgent_Player.velocity != Vector3.zero);
-
-        //RotateLocalPlayer();
-
     }
 
-    //void RotateLocalPlayer()
-    //{
-    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //    if (Physics.Raycast(ray, out RaycastHit hit, 100))
-    //    {
-    //        Debug.DrawLine(ray.origin, hit.point);
-    //        Vector3 lookRotate = new Vector3(hit.point.x, Transform_Player.position.y, hit.point.z);
-    //        Transform_Player.LookAt(lookRotate);
-    //    }
-    //}
+    // 준비 버튼을 클릭했을 때 호출되는 메서드
+    [Command]
+    public void CmdSetReady(bool ready)
+    {
+        isReady = ready;
+        GameManager.Instance.CheckAllPlayersReady(); // 모든 플레이어가 준비되었는지 확인
+    }
 }
