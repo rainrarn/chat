@@ -3,19 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
+
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance;
 
-
     public Text countdownText;
-
     public Text questionText;
     public Text answerText;
-    
-    private string currentQuestion = "Is the sky blue?";
-    private bool correctAnswerIsO = true; // 정답이 O 구역인지 X 구역인지 표시
 
+    [System.Serializable]
+    public class QuestionAnswerSet
+    {
+        public string question;
+        public bool correctAnswerIsO; // true면 O가 정답, false면 X가 정답
+    }
+
+    public List<QuestionAnswerSet> questionAnswerSets;
+
+    private List<QuestionAnswerSet> remainingQuestions;
+    private QuestionAnswerSet currentSet;
     private Coroutine countdownCoroutine;
 
     private void Awake()
@@ -28,6 +35,20 @@ public class GameManager : NetworkBehaviour
         {
             Destroy(gameObject);
         }
+
+        // 질문과 답을 추가합니다.
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "인류의 최조의 조미료는 소금이다?", correctAnswerIsO = false });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "무게로 따졌을 때 지구에서 가장 무거운 생물군은 곤충이다.", correctAnswerIsO = false });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "인간의 뇌의 무게는 평균 2kg 이상이다", correctAnswerIsO = false });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "안드로메다 은하는 우리 은하와 가장 가까운 은하이다", correctAnswerIsO = true });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "지구상 두번째로 큰 대륙은 남극이다", correctAnswerIsO = false });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "바다의 평균수온은 약 16도이다.", correctAnswerIsO = true });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "코카콜라가 만들어 진 시기는 19세기이다", correctAnswerIsO = true });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "세계에서 가장 긴 강은 아마존강이다.", correctAnswerIsO = false });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "사이비는 영어이다.", correctAnswerIsO = false });
+        questionAnswerSets.Add(new QuestionAnswerSet { question = "코뿔소는 소보다 말에 가깝다.", correctAnswerIsO = true });
+
+        remainingQuestions = new List<QuestionAnswerSet>(questionAnswerSets);
     }
 
     public void CheckAllPlayersReady()
@@ -68,13 +89,24 @@ public class GameManager : NetworkBehaviour
 
     private void StartGame()
     {
-        RpcShowQuestion(currentQuestion);
+        // 랜덤하게 문제와 정답 세트 선택
+        if (remainingQuestions.Count == 0)
+        {
+            // 모든 문제가 출제되었을 경우 초기화
+            remainingQuestions = new List<QuestionAnswerSet>(questionAnswerSets);
+        }
+
+        int randomIndex = Random.Range(0, remainingQuestions.Count);
+        currentSet = remainingQuestions[randomIndex];
+        remainingQuestions.RemoveAt(randomIndex);
+
+        RpcShowQuestion(currentSet.question);
         countdownCoroutine = StartCoroutine(StartGameCountdown());
     }
 
     private IEnumerator StartGameCountdown()
     {
-        int countdown = 3; // 게임 카운트다운 시간
+        int countdown = 10; // 게임 카운트다운 시간
         while (countdown > 0)
         {
             RpcUpdateCountdown(countdown, "");
@@ -83,12 +115,11 @@ public class GameManager : NetworkBehaviour
         }
 
         RpcStopCountdown();
-        RpcShowAnswer(correctAnswerIsO);
+        RpcShowAnswer(currentSet.correctAnswerIsO);
         yield return new WaitForSeconds(3);
 
         RpcHideQuestionAndAnswer();
-        // 다음 문제를 설정하거나 게임 상태를 변경하는 로직 추가
-        Debug.Log("Game segment ended!");
+        StartGame(); // 다음 문제를 출제
     }
 
     [ClientRpc]
@@ -130,5 +161,3 @@ public class GameManager : NetworkBehaviour
         answerText.gameObject.SetActive(false);
     }
 }
-   
-
