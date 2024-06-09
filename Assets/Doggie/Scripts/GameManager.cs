@@ -8,7 +8,14 @@ public class GameManager : NetworkBehaviour
     public static GameManager Instance;
 
 
-    public Text countdownText; // 카운트다운 텍스트를 UI에 추가
+    public Text countdownText;
+
+    public Text questionText;
+    public Text answerText;
+    
+    private string currentQuestion = "Is the sky blue?";
+    private bool correctAnswerIsO = true; // 정답이 O 구역인지 X 구역인지 표시
+
     private Coroutine countdownCoroutine;
 
     private void Awake()
@@ -27,7 +34,6 @@ public class GameManager : NetworkBehaviour
     {
         foreach (NetPlayerObject player in FindObjectsOfType<NetPlayerObject>())
         {
-            // 아직 준비되지 않은 플레이어가 있음
             if (!player.isReady)
             {
                 if (countdownCoroutine != null)
@@ -36,34 +42,59 @@ public class GameManager : NetworkBehaviour
                     countdownCoroutine = null;
                     RpcStopCountdown();
                 }
-                return;
+                return; // 아직 준비되지 않은 플레이어가 있음
             }
         }
+
         if (countdownCoroutine == null)
         {
-            countdownCoroutine = StartCoroutine(StartCountdown());
+            countdownCoroutine = StartCoroutine(StartReadyCountdown());
         }
     }
 
-
-    private IEnumerator StartCountdown()
+    private IEnumerator StartReadyCountdown()
     {
-        int countdown = 5;
+        int countdown = 5; // 준비 카운트다운 시간
         while (countdown > 0)
         {
-            RpcUpdateCountdown(countdown);
+            RpcUpdateCountdown(countdown, "");
             yield return new WaitForSeconds(1);
             countdown--;
         }
 
-        RpcStartGame();
+        RpcStopCountdown();
+        StartGame();
     }
 
+    private void StartGame()
+    {
+        RpcShowQuestion(currentQuestion);
+        countdownCoroutine = StartCoroutine(StartGameCountdown());
+    }
+
+    private IEnumerator StartGameCountdown()
+    {
+        int countdown = 3; // 게임 카운트다운 시간
+        while (countdown > 0)
+        {
+            RpcUpdateCountdown(countdown, "");
+            yield return new WaitForSeconds(1);
+            countdown--;
+        }
+
+        RpcStopCountdown();
+        RpcShowAnswer(correctAnswerIsO);
+        yield return new WaitForSeconds(3);
+
+        RpcHideQuestionAndAnswer();
+        // 다음 문제를 설정하거나 게임 상태를 변경하는 로직 추가
+        Debug.Log("Game segment ended!");
+    }
 
     [ClientRpc]
-    private void RpcUpdateCountdown(int countdown)
+    private void RpcUpdateCountdown(int countdown, string prefix)
     {
-        countdownText.text = countdown.ToString();
+        countdownText.text = prefix + countdown.ToString();
         countdownText.gameObject.SetActive(true);
     }
 
@@ -72,17 +103,32 @@ public class GameManager : NetworkBehaviour
     {
         countdownText.gameObject.SetActive(false);
     }
+
     [ClientRpc]
-    private void RpcStartGame()
+    private void RpcShowQuestion(string question)
     {
-        
-        Debug.Log("All players are ready. Starting the game!");
-        
-        StartOXGame();
+        questionText.text = question;
+        questionText.gameObject.SetActive(true);
     }
 
-    private void StartOXGame()
+    [ClientRpc]
+    private void RpcShowAnswer(bool correctAnswerIsO)
     {
-        
+        answerText.text = correctAnswerIsO ? "정답 : O" : "정답 : X";
+        answerText.gameObject.SetActive(true);
+
+        foreach (NetPlayerObject player in FindObjectsOfType<NetPlayerObject>())
+        {
+            player.CheckAnswer(correctAnswerIsO);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcHideQuestionAndAnswer()
+    {
+        questionText.gameObject.SetActive(false);
+        answerText.gameObject.SetActive(false);
     }
 }
+   
+

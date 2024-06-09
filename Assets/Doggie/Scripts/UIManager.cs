@@ -1,12 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+using System.Collections.Generic;
 public class UIManager : MonoBehaviour
 {
+
+    public static UIManager Instance;
+
     public Button readyButton;
-    public Text countdownText;
+    public Text countdownText; 
+    public Text questionText;
+    public Text answerText;
+    public Text scoreText;
     private NetPlayerObject localPlayer;
     private bool isReady = false; // 플레이어가 준비 상태인지 여부
+
+    private Dictionary<NetPlayerObject, Text> playerScores = new Dictionary<NetPlayerObject, Text>();
 
     private void Update()
     {
@@ -39,6 +47,13 @@ public class UIManager : MonoBehaviour
                 localPlayer.CmdSetReady(false);
             }
             readyButton.colors = colors;
+        }
+    }
+    public void UpdateScoreText(NetPlayerObject player)
+    {
+        if (player == localPlayer)
+        {
+            scoreText.text = "Score: " + player.score;
         }
     }
 }
